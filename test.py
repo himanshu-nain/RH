@@ -3,8 +3,7 @@ from Disease import Disease
 
 init()
 
+disease = Disease(name="Cholera",symptoms=['fatigue','body ache','nausea','vomiting','dehydration','water diarrhoea','lethargy'],pd=5000, loc=5000,cli=3000)
+insertDisease(disease)
 
-# disease = Disease(name="Flu",symptoms=['fatigue','body ache', 'cough','sore throat','fever','gastrointestinal disorder'],pd=10000, loc=8000,cli=2000)
-# insertDisease(disease)
-
-print(getDiseases(["a","b","c"]))
+#print(getDiseases(["cold"]))
