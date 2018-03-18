@@ -1,6 +1,9 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter, A4
+
 
 
 class Main_Window(Gtk.Window):
@@ -13,7 +16,6 @@ class Main_Window(Gtk.Window):
         Gtk.Window.__init__(self, title = "Medical App")
         self.set_border_width(10)
         self.set_default_size(1000, 800)
-        check = False
 
 
         #MAKING BOXES
@@ -32,62 +34,22 @@ class Main_Window(Gtk.Window):
         file_menu_dropdown = Gtk.MenuItem("File")
 
         file_new = Gtk.MenuItem("New")
-        file_open = Gtk.MenuItem("Open")
+        file_save = Gtk.MenuItem("Save")
         file_exit = Gtk.MenuItem("Exit")
 
         file_exit.connect("activate", Gtk.main_quit)
-        file_open.connect("activate", self.open_file)
+        file_save.connect("activate", self.save_file)
         file_new.connect("activate", self.new_file)
 
         file_menu_dropdown.set_submenu(file_menu)
 
         file_menu.append(file_new)
-        file_menu.append(file_open)
+        file_menu.append(file_save)
         file_menu.append(Gtk.SeparatorMenuItem())
         file_menu.append(file_exit)
 
         main_menu_bar.append(file_menu_dropdown)
 
-
-        #EDIT MENU
-
-        edit_menu = Gtk.Menu()
-        edit_menu_dropdown = Gtk.MenuItem("Edit")
-
-        edit_cut = Gtk.MenuItem("cut")
-        edit_copy = Gtk.MenuItem("copy")
-        edit_paste = Gtk.MenuItem("paste")
-        edit_delete = Gtk.MenuItem("delete")
-
-        edit_cut.connect("activate", self.cut_edit)
-        edit_copy.connect("activate", self.copy_edit)
-        edit_paste.connect("activate", self.paste_edit)
-        edit_delete.connect("activate", self.delete_edit)
-
-        edit_menu_dropdown.set_submenu(edit_menu)
-
-        edit_menu.append(edit_cut)
-        edit_menu.append(edit_copy)
-        edit_menu.append(edit_paste)
-        edit_menu.append(Gtk.SeparatorMenuItem())
-        edit_menu.append(edit_delete)
-
-        main_menu_bar.append(edit_menu_dropdown)
-
-        #HELP MENU
-
-        help_menu = Gtk.Menu()
-        help_menu_dropdown = Gtk.MenuItem("Help")
-
-        help_about = Gtk.MenuItem("about")
-
-        help_about.connect("activate", self.about_help)
-
-        help_menu_dropdown.set_submenu(help_menu)
-
-        help_menu.append(help_about)
-
-        main_menu_bar.append(help_menu_dropdown)
 
         #ADDING MENU BAR IN THE BOX
 
@@ -106,35 +68,35 @@ class Main_Window(Gtk.Window):
 
         #PATIENT'S DETAILS FILL
 
-        label_name = Gtk.Label("Patient's Name : ")
-        self.vbox1.pack_start(label_name, True, True, 0)
-        name = Gtk.Entry()
-        self.vbox1.pack_start(name, True, True, 5)
+        self.label_name = Gtk.Label("Patient's Name : ")
+        self.vbox1.pack_start(self.label_name, False, True, 0)
+        self.name = Gtk.Entry()
+        self.vbox1.pack_start(self.name, False, True, 5)
 
-        label_age = Gtk.Label("Patient's Age : ")
-        self.vbox1.pack_start(label_age, True, True, 0)
-        age = Gtk.Entry()
-        self.vbox1.pack_start(age, True, True, 5)
+        self.label_age = Gtk.Label("Patient's Age : ")
+        self.vbox1.pack_start(self.label_age, False, True, 0)
+        self.age = Gtk.Entry()
+        self.vbox1.pack_start(self.age, False, True, 5)
 
         label_time = Gtk.Label("Since When the problems started :")
-        self.vbox1.pack_start(label_time, True, True, 0)
+        self.vbox1.pack_start(label_time, False, True, 0)
         time = Gtk.Entry()
-        self.vbox1.pack_start(time, True, True, 5)
+        self.vbox1.pack_start(time, False, True, 5)
 
 
 
         #SYMPTOMS DETAILS
-        symptom1 = Gtk.Entry()
-        symptom2 = Gtk.Entry()
-        symptom3 = Gtk.Entry()
-        symptom4 = Gtk.Entry()
-        symptom5 = Gtk.Entry()
+        self.symptom1 = Gtk.Entry()
+        self.symptom2 = Gtk.Entry()
+        self.symptom3 = Gtk.Entry()
+        self.symptom4 = Gtk.Entry()
+        self.symptom5 = Gtk.Entry()
 
-        self.vbox2.pack_start(symptom1, False, True, 5)
-        self.vbox2.pack_start(symptom2, False, True, 5)
-        self.vbox2.pack_start(symptom3, False, True, 5)
-        self.vbox2.pack_start(symptom4, False, True, 5)
-        self.vbox2.pack_start(symptom5, False, True, 5)
+        self.vbox2.pack_start(self.symptom1, False, True, 5)
+        self.vbox2.pack_start(self.symptom2, False, True, 5)
+        self.vbox2.pack_start(self.symptom3, False, True, 5)
+        self.vbox2.pack_start(self.symptom4, False, True, 5)
+        self.vbox2.pack_start(self.symptom5, False, True, 5)
 
 
         #SET COMPLETION MODE IN THE SYMPTOMS
@@ -144,37 +106,45 @@ class Main_Window(Gtk.Window):
         completion3 = Gtk.EntryCompletion()
         completion4 = Gtk.EntryCompletion()
         completion5 = Gtk.EntryCompletion()
-        self.liststore1 = Gtk.ListStore(str)
-        self.liststore2 = Gtk.ListStore(str)
-        self.liststore3 = Gtk.ListStore(str)
-        self.liststore4 = Gtk.ListStore(str)
-        self.liststore5 = Gtk.ListStore(str)
-        for i in ['Head Ache', 'Loose Motion', 'Breathing Problems', 'Sore Throat', 'Red Eyes', 'Body Pain', 'Ulcer']:
-            self.liststore1.append([i])
-            self.liststore2.append([i])
-            self.liststore3.append([i])
-            self.liststore4.append([i])
-            self.liststore5.append([i])
+        self.liststore = Gtk.ListStore(str)
+        problems = ['Head Ache', 'Loose Motion', 'Breathing Problems', 'Sore Throat', 'Red Eyes', 'Body Pain', 'Ulcer']
+        for i in problems:
+            self.liststore.append([i])
 
-        completion1.set_model(self.liststore1)
-        completion2.set_model(self.liststore2)
-        completion3.set_model(self.liststore3)
-        completion4.set_model(self.liststore4)
-        completion5.set_model(self.liststore5)
+
+        self.treeview = Gtk.TreeView(self.liststore)
+
+
+        completion1.set_model(self.liststore)
+        completion2.set_model(self.liststore)
+        completion3.set_model(self.liststore)
+        completion4.set_model(self.liststore)
+        completion5.set_model(self.liststore)
         completion1.set_text_column(0)
         completion2.set_text_column(0)
         completion3.set_text_column(0)
         completion4.set_text_column(0)
         completion5.set_text_column(0)
-        symptom1.set_completion(completion1)
-       #symptom1.connect('activate', self.activate_cb)
-        symptom2.set_completion(completion2)
+        self.symptom1.set_completion(completion1)
+        selection1 = self.treeview.get_selection()
+        result = selection1.get_selected()
+        # if result:
+        #     self.liststore, iter = result
+        #     self.liststore.remove(iter)
+
+        # for row in self.liststore:
+        #     if self.liststore[row] == symptom1.get_text():
+        #         self.liststore.remove(row.iter)
+        #         break
+        #  #symptom1.connect('activate', self.activate_cb)
+
+        self.symptom2.set_completion(completion2)
         #symptom2.connect('activate', self.activate_cb)
-        symptom3.set_completion(completion3)
+        self.symptom3.set_completion(completion3)
         #symptom3.connect('activate', self.activate_cb)
-        symptom4.set_completion(completion4)
+        self.symptom4.set_completion(completion4)
         #symptom4.connect('activate', self.activate_cb)
-        symptom5.set_completion(completion5)
+        self.symptom5.set_completion(completion5)
         #symptom5.connect('activate', self.activate_cb)
 
 
@@ -183,11 +153,6 @@ class Main_Window(Gtk.Window):
         self.add_more = Gtk.Button("ADD MORE SYMPTOMS")
         self.add_more.connect("clicked", self.button_clicked)
         self.vbox2.pack_start(self.add_more, False, True, 5)
-
-        if check == True:
-            symptom = Gtk.Entry()
-            self.vbox2.pack_start(symptom, False, True, 5)
-            check = False
 
 
 
@@ -201,7 +166,10 @@ class Main_Window(Gtk.Window):
 
     def button_clicked(self, widget):
 
-        self.vbox2.remove(self.add_more)
+        #self.vbox2.remove(self.add_more)
+        symptom = Gtk.Entry()
+        self.vbox2.pack_end(symptom, False, True, 0)
+
 
 
     def activate_cb(self, entry):
@@ -238,31 +206,46 @@ class Main_Window(Gtk.Window):
         open("Hack_app.py")
 
 
+    def save_file(self, widget):
+        c = canvas.Canvas(self.name.get_text(), pagesize=A4)
 
-    def cut_edit(self, widget):
-        print("")
-        #TODO COMPLETE THIS FUNCTION
+        c.setFont('Helvetica', 20, leading=None)
+        c.drawString(240, 810, "Patient's Details")
+        c.setFont('Helvetica', 16, leading = None)
+        c.drawString(5, 750, "Name : ")
+        c.setFont('Helvetica', 16, leading = None)
+        c.drawString(70, 750, self.name.get_text())
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(5, 710, "Age : ")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(70,710, self.age.get_text())
+        c.setFont('Helvetica', 20, leading=None)
+        c.drawString(270, 650, "Symptoms")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(5, 590, "1. ")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(20, 590, self.symptom1.get_text())
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(5, 550, "2. ")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(20, 550, self.symptom2.get_text())
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(5, 510, "3. ")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(20, 510, self.symptom3.get_text())
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(5, 470, "4. ")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(20, 470, self.symptom4.get_text())
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(5,430, "5. ")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(20, 430, self.symptom5.get_text())
+        c.showPage()
+        c.save()
 
 
-    def copy_edit(self, widget):
-        print("")
-        #TODO COMPLETE THIS FUNCTION
 
-
-    def paste_edit(self, widget):
-        print("")
-        #TODO COMPLETE THIS FUNCTION
-
-
-    def delete_edit(self, widget):
-        print("")
-        #TODO COMPLETE THIS FUNCTION
-
-
-
-    def about_help(self, widget):
-        print("")
-        #TODO COMPLETE THIS FUNCTION
 
 
 
