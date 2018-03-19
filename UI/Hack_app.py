@@ -20,11 +20,11 @@ class Main_Window(Gtk.Window):
 
         #MAKING BOXES
 
-        self.hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 10)
+        self.hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
         self.vbox1 = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 5)
         self.vbox2 = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 5)
 
-        # TODO : MAKE THE MENU BAR FILE CREATED
+
 
         main_menu_bar = Gtk.MenuBar()
 
@@ -78,27 +78,38 @@ class Main_Window(Gtk.Window):
         self.age = Gtk.Entry()
         self.vbox1.pack_start(self.age, False, True, 5)
 
-        label_time = Gtk.Label("Since When the problems started :")
-        self.vbox1.pack_start(label_time, False, True, 0)
-        time = Gtk.Entry()
-        self.vbox1.pack_start(time, False, True, 5)
+        label_address = Gtk.Label("Patient's Address :")
+        self.vbox1.pack_start(label_address, False, True, 0)
+        self.address = Gtk.Entry()
+        self.vbox1.pack_start(self.address, False, True, 5)
+
+        label_number = Gtk.Label("Patient's Phone Number : ")
+        self.vbox1.pack_start(label_number, False, True, 0)
+        self.number = Gtk.Entry()
+        self.vbox1.pack_start(self.number, False, True, 5)
 
 
 
         #SYMPTOMS DETAILS
         self.symptom1 = Gtk.Entry()
+        self.symptom1.set_placeholder_text("(Compulsory)")
         self.symptom2 = Gtk.Entry()
+        self.symptom2.set_placeholder_text("(Compulsory)")
         self.symptom3 = Gtk.Entry()
+        self.symptom3.set_placeholder_text("(Optional)")
         self.symptom4 = Gtk.Entry()
+        self.symptom4.set_placeholder_text("(Optional)")
         self.symptom5 = Gtk.Entry()
-        self.symptom6 = Gtk.Entry()
-        self.symptom7 = Gtk.Entry()
-        self.symptom8 = Gtk.Entry()
+        self.symptom5.set_placeholder_text("(Optional)")
+
+        label_symptom = Gtk.Label("Symptoms : ")
+        self.vbox2.pack_start(label_symptom, False, True, 0)
 
         self.vbox2.pack_start(self.symptom1, False, True, 5)
         self.vbox2.pack_start(self.symptom2, False, True, 5)
+        symptom_separator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
+        self.vbox2.pack_start(symptom_separator, False, True, 0)
         self.vbox2.pack_start(self.symptom3, False, True, 5)
-
         self.vbox2.pack_start(self.symptom4, False, True, 5)
         self.vbox2.pack_start(self.symptom5, False, True, 5)
 
@@ -136,35 +147,33 @@ class Main_Window(Gtk.Window):
         self.symptom4.set_completion(completion4)
         self.symptom5.set_completion(completion5)
 
+
+        #SUBMIT BUTTON
+
+        self.submit = Gtk.Button("Submit")
+        self.submit.connect("clicked", self.submit_clicked)
+        self.vbox2.pack_start(self.submit, False, True, 5)
         #ADD HORIZONTAL BOX TO THE WINDOW WHICH CONTAINS ALL THE BOXES
 
         self.add(self.hbox)
 
 
-    def activate_cb(self, entry):
-        text = entry.get_text()
-        if text:
-            if text not in [row[0] for row in self.liststore]:
-                self.liststore.append([text])
-                entry.set_text(text)
-        return
+
+
+    def submit_clicked(self, widget):
+        if(len(self.symptom1.get_text()) == 0 or len(self.symptom2.get_text()) == 0):
+            dialog_error = PopUp(self)
+            response = dialog_error.run()
+
+            dialog_error.destroy()
+
+        #TODO CALL HIMANSHU NAIN FOR THE DISEASE
 
 
 
 
-    def open_file(self, widget):
 
-        dialog = Gtk.FileChooserDialog("Select Your File", self, Gtk.FileChooserAction.OPEN, ("Cancel", Gtk.ResponseType.CANCEL, "Ok", Gtk.ResponseType.OK))
-        response = dialog.run()
 
-        if response == Gtk.ResponseType.OK:
-            #TODO OPENING OF THE FILE
-            print("HOLA")
-
-        elif response == Gtk.ResponseType.CANCEL:
-            dialog.destroy()
-
-        dialog.destroy()
 
 
 
@@ -219,7 +228,17 @@ class Main_Window(Gtk.Window):
 
 
 
+class PopUp(Gtk.Dialog):
 
+    def __init__(self, parent):
+
+        Gtk.Dialog.__init__(self, "Error", parent, Gtk.DialogFlags.MODAL, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        self.set_default_size(100, 50)
+        self.set_border_width(20)
+
+        area = self.get_content_area()
+        area.add(Gtk.Label("Atleast Two Symptoms are required."))
+        self.show_all()
 
 
 
