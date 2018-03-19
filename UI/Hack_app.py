@@ -56,6 +56,11 @@ class Main_Window(Gtk.Window):
         self.hbox.pack_start(main_menu_bar, True, True, 0)
 
 
+        #ADDING LABEL TITLE OF WINDOW
+
+
+
+
         #ADDING VERTICAL BOX INSIDE THE HORIZONTAL BOX
 
         self.hbox.pack_start(self.vbox1, True, True, 0)
