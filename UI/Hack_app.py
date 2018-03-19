@@ -56,11 +56,6 @@ class Main_Window(Gtk.Window):
         self.hbox.pack_start(main_menu_bar, True, True, 0)
 
 
-        #ADDING LABEL TITLE OF WINDOW
-
-
-
-
         #ADDING VERTICAL BOX INSIDE THE HORIZONTAL BOX
 
         self.hbox.pack_start(self.vbox1, True, True, 0)
@@ -96,10 +91,14 @@ class Main_Window(Gtk.Window):
         self.symptom3 = Gtk.Entry()
         self.symptom4 = Gtk.Entry()
         self.symptom5 = Gtk.Entry()
+        self.symptom6 = Gtk.Entry()
+        self.symptom7 = Gtk.Entry()
+        self.symptom8 = Gtk.Entry()
 
         self.vbox2.pack_start(self.symptom1, False, True, 5)
         self.vbox2.pack_start(self.symptom2, False, True, 5)
         self.vbox2.pack_start(self.symptom3, False, True, 5)
+
         self.vbox2.pack_start(self.symptom4, False, True, 5)
         self.vbox2.pack_start(self.symptom5, False, True, 5)
 
@@ -130,51 +129,16 @@ class Main_Window(Gtk.Window):
         completion3.set_text_column(0)
         completion4.set_text_column(0)
         completion5.set_text_column(0)
+
         self.symptom1.set_completion(completion1)
-        selection1 = self.treeview.get_selection()
-        result = selection1.get_selected()
-        # if result:
-        #     self.liststore, iter = result
-        #     self.liststore.remove(iter)
-
-        # for row in self.liststore:
-        #     if self.liststore[row] == symptom1.get_text():
-        #         self.liststore.remove(row.iter)
-        #         break
-        #  #symptom1.connect('activate', self.activate_cb)
-
         self.symptom2.set_completion(completion2)
-        #symptom2.connect('activate', self.activate_cb)
         self.symptom3.set_completion(completion3)
-        #symptom3.connect('activate', self.activate_cb)
         self.symptom4.set_completion(completion4)
-        #symptom4.connect('activate', self.activate_cb)
         self.symptom5.set_completion(completion5)
-        #symptom5.connect('activate', self.activate_cb)
-
-
-        #ADD MORE BUTTON
-
-        self.add_more = Gtk.Button("ADD MORE SYMPTOMS")
-        self.add_more.connect("clicked", self.button_clicked)
-        self.vbox2.pack_start(self.add_more, False, True, 5)
-
-
 
         #ADD HORIZONTAL BOX TO THE WINDOW WHICH CONTAINS ALL THE BOXES
 
         self.add(self.hbox)
-
-
-        #FUNCTION TO CALL WHEN ADD_MORE BUTTON IS CLICKED!
-
-
-    def button_clicked(self, widget):
-
-        #self.vbox2.remove(self.add_more)
-        symptom = Gtk.Entry()
-        self.vbox2.pack_end(symptom, False, True, 0)
-
 
 
     def activate_cb(self, entry):
