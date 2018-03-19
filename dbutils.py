@@ -19,7 +19,7 @@ def getDiseases(symptoms):
 
         for symptom in symptoms:
 
-            if(symptom in disease.symptos):
+            if(symptom in disease.symptoms):
 
                 if(disease not in result):
                     result.append(disease)
