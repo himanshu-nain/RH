@@ -1,14 +1,9 @@
-from mongoengine import *
+class Disease():
+    #pd = population density
+    #loc = location of the place
+    #cli = climate of the place
 
-class Disease(Document):
-    name = StringField(required=True, unique=True, max_length=30)
-    pd = IntField(required=True)
-    cli = IntField(required=True)
-    loc = IntField(required=True)
-    symptoms = ListField(StringField(max_length=30))
-
-    def __init__(self, name, symptoms, pd, loc, cli, *args, **kwargs):
-        super(Document, self).__init__(*args, **kwargs)
+    def __init__(self, name, symptoms, pd, loc, cli):
         self.name = name
         self.symptoms = symptoms
         self.pd = pd
@@ -25,9 +20,6 @@ class Disease(Document):
         self.cli = cli
         return
 
-    def get_name(self):
-        return  self.name
-
     def get_symp(self):
         return self.symptoms
 
@@ -39,7 +31,6 @@ class Disease(Document):
 
     def get_loc(self):
         return self.loc
-    #
-    # def __str__(self):
-    #     return self.name
 
+    def get_name(self):
+        return self.name

@@ -29,3 +29,18 @@ def getDiseases(symptoms):
 
     return result
 
+def getAllSymptomps():
+
+    objects = Disease.objects()
+
+    result=[]
+
+    for object in objects:
+
+        for symptom in object.symptoms:
+
+            if symptom not in result:
+                result.append(symptom)
+
+    return result
+
