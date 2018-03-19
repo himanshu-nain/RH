@@ -9,7 +9,7 @@ def insertDisease(d):
     d.save()
     pass
 
-def getDiseases(symptomps):
+def getDiseases(symptoms):
 
     objects = Disease.objects()
 
@@ -17,9 +17,9 @@ def getDiseases(symptomps):
 
     for disease in objects:
 
-        for symptomp in symptomps:
+        for symptom in symptoms:
 
-            if(symptomp in disease.symptoms):
+            if(symptom in disease.symptos):
 
                 if(disease not in result):
                     result.append(disease)
