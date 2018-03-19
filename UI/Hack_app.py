@@ -166,11 +166,15 @@ class Main_Window(Gtk.Window):
             response = dialog_error.run()
 
             dialog_error.destroy()
+            return
 
         #TODO CALL HIMANSHU NAIN FOR THE DISEASE
+        disease = "Malaria"
 
+        dialog_answer = Answer(self, disease)
+        response = dialog_answer.run()
 
-
+        dialog_answer.destroy()
 
 
 
@@ -207,18 +211,22 @@ class Main_Window(Gtk.Window):
         c.drawString(5, 550, "2. ")
         c.setFont('Helvetica', 16, leading=None)
         c.drawString(20, 550, self.symptom2.get_text())
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(5, 510, "3. ")
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(20, 510, self.symptom3.get_text())
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(5, 470, "4. ")
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(20, 470, self.symptom4.get_text())
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(5,430, "5. ")
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(20, 430, self.symptom5.get_text())
+        if len(self.symptom3.get_text()) != 0:
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(5, 510, "3. ")
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(20, 510, self.symptom3.get_text())
+        if len(self.symptom4.get_text()) != 0:
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(5, 470, "4. ")
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(20, 470, self.symptom4.get_text())
+        if len(self.symptom5.get_text()) != 0:
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(5,430, "5. ")
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(20, 430, self.symptom5.get_text())
+
         c.showPage()
         c.save()
 
@@ -243,7 +251,19 @@ class PopUp(Gtk.Dialog):
 
 
 
+class Answer(Gtk.Dialog):
 
+
+
+    def __init__(self, parent, disease):
+
+        Gtk.Dialog.__init__(self, "Disease", parent, Gtk.DialogFlags.MODAL, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        self.set_default_size(100,50)
+        self.set_border_width(20)
+        self.disease = disease
+        area = self.get_content_area()
+        area.add(Gtk.Label("The Possible Disease Patient is suffering from is " + self.disease))
+        self.show_all()
 
 
 
