@@ -21,7 +21,8 @@ def getDiseases(symptomps):
 
             if(symptomp in disease.symptoms):
 
-                result.append(disease)
+                if(disease not in result):
+                    result.append(disease)
 
             else:
                 pass
