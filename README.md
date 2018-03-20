@@ -9,7 +9,7 @@ Clone project and follow installation instructions.
 
 ### Prerequisites
 
-Python Packages
+Python Packages [requirements.txt](requirements.txt)
 ```
 Python3, mongoengine, reportlab, flask, flask-API
 ```
