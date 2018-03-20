@@ -33,14 +33,14 @@ def getAllSymptomps():
 
     objects = Disease.objects()
 
-    result=[]
+    result=""
 
     for object in objects:
 
         for symptom in object.symptoms:
 
             if symptom not in result:
-                result.append(symptom)
+                result = result + "\n" + symptom
 
     return result
 
