@@ -7,10 +7,10 @@ from reportlab.lib.pagesizes import letter, A4
 from dbutils import getDiseases, init, destroy
 from classifier import classifier
 import os
+from mail_bot import send_mail
+
 
 class Main_Window(Gtk.Window):
-
-
 
     def __init__(self):
         #WINDOW DESCRIPTION
@@ -284,6 +284,31 @@ class Main_Window(Gtk.Window):
         self.save_file(response)
         dialog_answer.destroy()
 
+        time = str(datetime.datetime.now())
+        time = time.split(' ')
+
+        date = time[0].split('-')
+        date = date[2] + "-" + date[1] + "-" + date[0]
+        time = time[1][:len(time[1]) - 7]
+
+        try:
+            send_mail(self.name.get_text(), date, time, self.name.get_text()+"_"+date+"_"+time+".pdf")
+            #todo the mail has been sent
+        except Exception as e:
+            #todo the report couldn't be mailed to the doctor
+            print(str(e))
+        filep = './Reports/' + self.name.get_text()+"_"+date+"_"+time+".pdf"
+        os.system('/usr/bin/xdg-open '+filep)
+        self.name.set_text('')
+        self.age.set_text('')
+        self.address.set_text('')
+        self.number.set_text('')
+        self.symptom3.set_text('')
+        self.symptom2.set_text('')
+        self.symptom1.set_text('')
+        self.symptom5.set_text('')
+        self.symptom4.set_text('')
+
 
 
 
@@ -306,7 +331,7 @@ class Main_Window(Gtk.Window):
         filepath = os.getcwd()
         if not os.path.exists(filepath + "/Reports"):
             os.mkdir(filepath + "/Reports")
-        c = canvas.Canvas(filepath + "/Reports/"+self.name.get_text()+" "+date+" "+time, pagesize=A4)
+        c = canvas.Canvas(filepath + "/Reports/"+self.name.get_text()+"_"+date+"_"+time+".pdf", pagesize=A4)
         c.setFont('Helvetica', 20, leading=None)
         c.drawString(240, 810, "Patient's Details")
         c.setFont('Helvetica', 18, leading=None)
