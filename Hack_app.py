@@ -126,15 +126,13 @@ class Main_Window(Gtk.Window):
         completion4 = Gtk.EntryCompletion()
         completion5 = Gtk.EntryCompletion()
         self.liststore = Gtk.ListStore(str)
-        problems = []
+        self.problems = []
         with open("sym.txt") as filename:
             for line in filename:
-                problems.append(line.strip('\n'))
+                self.problems.append(line.strip('\n'))
 
-        for text in problems:
+        for text in self.problems:
             self.liststore.append([text])
-
-
 
         completion1.set_model(self.liststore)
         completion2.set_model(self.liststore)
@@ -181,45 +179,64 @@ class Main_Window(Gtk.Window):
             return
 
         if len(self.symptom1.get_text()) != 0:
-            for i in self.liststore:
-                if self.symptom1.get_text() != i:
-                    dialog_entry_error = Error(self)
-                    response = dialog_entry_error.run()
-                    dialog_entry_error.destroy()
-                    return
-
+            if self.symptom1.get_text() not in self.problems:
+                print(self.symptom1.get_text())
+                print(self.liststore)
+                dialog_entry_error = Error(self)
+                response = dialog_entry_error.run()
+                dialog_entry_error.destroy()
+                return
         if len(self.symptom2.get_text()) != 0:
-            for i in self.liststore:
-                if self.symptom2.get_text() != i:
-                    dialog_entry_error = Error(self)
-                    response = dialog_entry_error.run()
-                    dialog_entry_error.destroy()
-                    return
-
+            if self.symptom2.get_text() not in self.problems:
+                dialog_entry_error = Error(self)
+                response = dialog_entry_error.run()
+                dialog_entry_error.destroy()
+                return
         if len(self.symptom3.get_text()) != 0:
-            for i in self.liststore:
-                if self.symptom3.get_text() != i:
-                    dialog_entry_error = Error(self)
-                    response = dialog_entry_error.run()
-                    dialog_entry_error.destroy()
-                    return
+            if self.symptom3.get_text() not in self.problems:
+                dialog_entry_error = Error(self)
+                response = dialog_entry_error.run()
+                dialog_entry_error.destroy()
+                return
 
 
         if len(self.symptom4.get_text()) != 0:
-            for i in self.liststore:
-                if self.symptom4.get_text() != i:
-                    dialog_entry_error = Error(self)
-                    response = dialog_entry_error.run()
-                    dialog_entry_error.destroy()
-                    return
+            if self.symptom4.get_text() not in self.problems:
+                dialog_entry_error = Error(self)
+                response = dialog_entry_error.run()
+                dialog_entry_error.destroy()
+                return
 
         if len(self.symptom5.get_text()) != 0:
-            for i in self.liststore:
-                if self.symptom5.get_text() != i:
-                    dialog_entry_error = Error(self)
-                    response = dialog_entry_error.run()
-                    dialog_entry_error.destroy()
-                    return
+            if self.symptom5.get_text() not in self.problems:
+                dialog_entry_error = Error(self)
+                response = dialog_entry_error.run()
+                dialog_entry_error.destroy()
+                return
+
+        if self.symptom2.get_text() == self.symptom1.get_text() and len(self.symptom2.get_text())>0:
+            dialog_same = Same(self)
+            response = dialog_same.run()
+            dialog_same.destroy()
+            return
+
+        if (self.symptom3.get_text() == self.symptom1.get_text() or self.symptom3.get_text() == self.symptom2.get_text()) and  len(self.symptom3.get_text())>0:
+            dialog_same = Same(self)
+            response = dialog_same.run()
+            dialog_same.destroy()
+            return
+
+        if (self.symptom4.get_text() == self.symptom1.get_text() or self.symptom4.get_text() == self.symptom2.get_text() or self.symptom4.get_text() == self.symptom3.get_text()) and len(self.symptom4.get_text())>0:
+            dialog_same = Same(self)
+            response = dialog_same.run()
+            dialog_same.destroy()
+            return
+
+        if (self.symptom5.get_text() == self.symptom1.get_text() or self.symptom5.get_text() == self.symptom2.get_text() or self.symptom5.get_text() == self.symptom3.get_text() or self.symptom5.get_text() == self.symptom4.get_text()) and len(self.symptom5.get_text())>0:
+            dialog_same = Same(self)
+            response = dialog_same.run()
+            dialog_same.destroy()
+            return
 
         list = []
         list.append(self.symptom1.get_text())
@@ -349,11 +366,21 @@ class Error(Gtk.Dialog):
         self.set_border_width(20)
         self.set_position(Gtk.WindowPosition.CENTER)
         area = self.get_content_area()
-        area.add(Gtk.Label("The Entered Symptom is Wrong."))
+        area.add(Gtk.Label("You have entered one or more wrong symptoms"))
         self.show_all()
 
 
+class Same(Gtk.Dialog):
 
+    def __init__(self, parent):
+
+        Gtk.Dialog.__init__(self, "Error", parent, Gtk.DialogFlags.MODAL, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        self.set_default_size(130, 80)
+        self.set_border_width(20)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        area = self.get_content_area()
+        area.add(Gtk.Label("Repeated Symptom(s)"))
+        self.show_all()
 
 
 
