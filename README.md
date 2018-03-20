@@ -38,7 +38,7 @@ You can deploy api contained in app.py to connect with different platforms. Chan
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
