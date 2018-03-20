@@ -5,7 +5,7 @@ Primitive HealthCare Solution For Remote Areas.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Clone project and follow installation instructions.
 
 ### Prerequisites
 
@@ -17,8 +17,6 @@ Database
 ```
 MongoDB
 ```
-
-
 
 ### Installing
 
@@ -36,11 +34,12 @@ python3 Hack_app.py
 
 You can deploy api contained in app.py to connect with different platforms. Change db address accordingly
 
+## Authors
+[Badal Kariwal](https://github.com/kariwalbadal)
+[Himanshu Nain](https://github.com/himanshu-nain)
+[Shubham Pasari](https://github.com/Shubh0501)
+Ashutosh Krishna
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
