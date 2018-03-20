@@ -181,8 +181,13 @@ class Main_Window(Gtk.Window):
             return
 
         try:
+
             pqr=int(self.age.get_text())
             abc = int(self.number.get_text())
+            if(pqr<0 or pqr>120):
+                pqr = (int)("abc")
+            if(len(str(abc))!=10 and abc > 0):
+                abc = (int)("pqr")
         except Exception as e:
             dialog_number = Number(self)
             response = dialog_number.run()
