@@ -236,7 +236,7 @@ class Main_Window(Gtk.Window):
 
         dialog_answer = Answer(self, self.disease)
         response = dialog_answer.run()
-
+        self.save_file(response)
         dialog_answer.destroy()
 
 
