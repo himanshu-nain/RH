@@ -3,7 +3,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
-from dbutils import getDiseases, init
+from dbutils import getDiseases, init, destroy
 from classifier import classifier
 
 
@@ -224,7 +224,6 @@ class Main_Window(Gtk.Window):
         list = []
         list.append(self.symptom1.get_text())
         list.append(self.symptom2.get_text())
-        print(list)
         if(len(self.symptom3.get_text())>0):
             list.append(self.symptom3.get_text())
         if (len(self.symptom4.get_text()) > 0):
@@ -234,9 +233,11 @@ class Main_Window(Gtk.Window):
 
         #DISEASE SELECTION USING CLASSIFIER
 
-        init()
+        db_client = init()
         all_Diseases = getDiseases(list)
         self.disease = classifier(all_Diseases, list)
+
+        destroy(db_client)
 
         dialog_answer = Answer(self, self.disease)
         response = dialog_answer.run()
@@ -349,7 +350,7 @@ class Error(Gtk.Dialog):
         self.set_border_width(20)
         self.set_position(Gtk.WindowPosition.CENTER)
         area = self.get_content_area()
-        area.add(Gtk.Label("The Entered Symptom is Wrong."))
+        area.add(Gtk.Label("You have entered one or more wrong symptoms"))
         self.show_all()
 
 
