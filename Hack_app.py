@@ -6,7 +6,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 from dbutils import getDiseases, init, destroy
 from classifier import classifier
-
+import os
 
 class Main_Window(Gtk.Window):
 
@@ -297,14 +297,16 @@ class Main_Window(Gtk.Window):
 
 
     def save_file(self, widget):
-        c = canvas.Canvas(self.name.get_text(), pagesize=A4)
-
         time = str(datetime.datetime.now())
         time = time.split(' ')
 
         date = time[0].split('-')
-        date = date[2]+"/"+date[1]+"/"+date[0]
-        time = time[1][:len(time[1])-7]
+        date = date[2] + "-" + date[1] + "-" + date[0]
+        time = time[1][:len(time[1]) - 7]
+        filepath = os.getcwd()
+        if not os.path.exists(filepath + "/Reports"):
+            os.mkdir(filepath + "/Reports")
+        c = canvas.Canvas(filepath + "/Reports/"+self.name.get_text()+" "+date+" "+time, pagesize=A4)
         c.setFont('Helvetica', 20, leading=None)
         c.drawString(240, 810, "Patient's Details")
         c.setFont('Helvetica', 18, leading=None)
