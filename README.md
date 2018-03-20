@@ -35,10 +35,10 @@ python3 Hack_app.py
 You can deploy api contained in app.py to connect with different platforms. Change db address accordingly
 
 ## Authors
-[Badal Kariwal](https://github.com/kariwalbadal)
-[Himanshu Nain](https://github.com/himanshu-nain)
-[Shubham Pasari](https://github.com/Shubh0501)
-Ashutosh Krishna
+>[Badal Kariwal](https://github.com/kariwalbadal)
+>[Himanshu Nain](https://github.com/himanshu-nain)
+>[Shubham Pasari](https://github.com/Shubh0501)
+>Ashutosh Krishna
 
 ## License
 
