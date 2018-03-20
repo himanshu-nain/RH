@@ -180,6 +180,15 @@ class Main_Window(Gtk.Window):
             dialog_details.destroy()
             return
 
+        try:
+            pqr=int(self.age.get_text())
+            abc = int(self.number.get_text())
+        except Exception as e:
+            dialog_number = Number(self)
+            response = dialog_number.run()
+            dialog_number.destroy()
+            return
+
         if(len(self.symptom1.get_text()) == 0 or len(self.symptom2.get_text()) == 0):
             dialog_error = PopUp(self)
             response = dialog_error.run()
@@ -424,7 +433,17 @@ class Details(Gtk.Dialog):
         area.add(Gtk.Label("Please enter Patient's details"))
         self.show_all()
 
+class Number(Gtk.Dialog):
 
+    def __init__(self, parent):
+
+        Gtk.Dialog.__init__(self, "Error", parent, Gtk.DialogFlags.MODAL, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        self.set_default_size(130, 80)
+        self.set_border_width(20)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        area = self.get_content_area()
+        area.add(Gtk.Label("Invalid Age or Phone number"))
+        self.show_all()
 
 
 
