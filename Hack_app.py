@@ -290,13 +290,13 @@ class Main_Window(Gtk.Window):
 
         try:
             send_mail(self.name.get_text(), date, time, self.name.get_text()+"_"+date+"_"+time+".pdf")
-            #todo the mail has been sent
+
             dialog_mail_sent = Mail(self)
             response = dialog_mail_sent.run()
             dialog_mail_sent.destroy()
 
         except Exception as e:
-            #todo the report couldn't be mailed to the doctor
+
             dialog_mail_error = Mail_error(self)
             response = dialog_mail_error.run()
             dialog_mail_error.destroy()
