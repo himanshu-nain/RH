@@ -3,7 +3,8 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
-
+from dbutils import getDiseases, init
+from classifier import classifier
 
 
 class Main_Window(Gtk.Window):
@@ -15,7 +16,7 @@ class Main_Window(Gtk.Window):
 
         Gtk.Window.__init__(self, title = "Medical App")
         self.set_border_width(10)
-        self.set_default_size(1000, 800)
+        self.set_default_size(850, 300)
 
 
         #MAKING BOXES
@@ -105,6 +106,9 @@ class Main_Window(Gtk.Window):
         label_symptom = Gtk.Label("Symptoms : ")
         self.vbox2.pack_start(label_symptom, False, True, 0)
 
+        label_info = Gtk.Label("Please enter symptoms from the list available")
+        self.vbox2.pack_start(label_info, False, True, 0)
+
         self.vbox2.pack_start(self.symptom1, False, True, 5)
         self.vbox2.pack_start(self.symptom2, False, True, 5)
         symptom_separator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
@@ -122,11 +126,15 @@ class Main_Window(Gtk.Window):
         completion4 = Gtk.EntryCompletion()
         completion5 = Gtk.EntryCompletion()
         self.liststore = Gtk.ListStore(str)
-        problems = ['Head Ache', 'Loose Motion', 'Breathing Problems', 'Sore Throat', 'Red Eyes', 'Body Pain', 'Ulcer']
-        for i in problems:
-            self.liststore.append([i])
+        problems = []
+        with open("sym.txt") as filename:
+            for line in filename:
+                problems.append(line.strip('\n'))
 
+        for text in problems:
+            self.liststore.append([text])
 
+#        problems.remove('')
         self.treeview = Gtk.TreeView(self.liststore)
 
 
@@ -147,6 +155,47 @@ class Main_Window(Gtk.Window):
         self.symptom4.set_completion(completion4)
         self.symptom5.set_completion(completion5)
 
+        # if len(self.symptom1.get_text()) != 0:
+        #     for i in problems:
+        #         if self.symptom1.get_text() != i:
+        #             dialog_entry_error = Error(self)
+        #             response = dialog_entry_error.run()
+        #             dialog_entry_error.destroy()
+        #             break
+        #
+        # if len(self.symptom2.get_text()) != 0:
+        #     for i in problems:
+        #         if self.symptom2.get_text() != i:
+        #             dialog_entry_error = Error(self)
+        #             response = dialog_entry_error.run()
+        #             dialog_entry_error.destroy()
+        #             break
+        #
+        # if len(self.symptom3.get_text()) != 0:
+        #     for i in problems:
+        #         if self.symptom3.get_text() != i:
+        #             dialog_entry_error = Error(self)
+        #             response = dialog_entry_error.run()
+        #             dialog_entry_error.destroy()
+        #             break
+        #
+        #
+        # if len(self.symptom4.get_text()) != 0:
+        #     for i in problems:
+        #         if self.symptom4.get_text() != i:
+        #             dialog_entry_error = Error(self)
+        #             response = dialog_entry_error.run()
+        #             dialog_entry_error.destroy()
+        #             break
+        #
+        # if len(self.symptom5.get_text()) != 0:
+        #     for i in problems:
+        #         if self.symptom5.get_text() != i:
+        #             dialog_entry_error = Error(self)
+        #             response = dialog_entry_error.run()
+        #             dialog_entry_error.destroy()
+        #             break
+
 
         #SUBMIT BUTTON
 
@@ -166,11 +215,29 @@ class Main_Window(Gtk.Window):
             response = dialog_error.run()
 
             dialog_error.destroy()
+            return
 
-        #TODO CALL HIMANSHU NAIN FOR THE DISEASE
+        list = []
+        list.append(self.symptom1.get_text())
+        list.append(self.symptom2.get_text())
+        print(list)
+        if(len(self.symptom3.get_text())>0):
+            list.append(self.symptom3.get_text())
+        if (len(self.symptom4.get_text()) > 0):
+            list.append(self.symptom4.get_text())
+        if (len(self.symptom5.get_text()) > 0):
+            list.append(self.symptom5.get_text())
 
+        #DISEASE SELECTION USING CLASSIFIER
 
+        init()
+        all_Diseases = getDiseases(list)
+        self.disease = classifier(all_Diseases, list)
 
+        dialog_answer = Answer(self, self.disease)
+        response = dialog_answer.run()
+
+        dialog_answer.destroy()
 
 
 
@@ -207,26 +274,35 @@ class Main_Window(Gtk.Window):
         c.drawString(5, 550, "2. ")
         c.setFont('Helvetica', 16, leading=None)
         c.drawString(20, 550, self.symptom2.get_text())
+
+        optional_symptoms = 0
+
+        if len(self.symptom3.get_text()) > 0:
+            optional_symptoms = optional_symptoms + 1
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(5, 510, "3. ")
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(20, 510, self.symptom3.get_text())
+        if len(self.symptom4.get_text()) > 0:
+            optional_symptoms = optional_symptoms + 1
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(5, 470, "4. ")
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(20, 470, self.symptom4.get_text())
+        if len(self.symptom5.get_text()) > 0:
+            optional_symptoms = optional_symptoms + 1
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(5,430, "5. ")
+            c.setFont('Helvetica', 16, leading=None)
+            c.drawString(20, 430, self.symptom5.get_text())
+
+        c.setFont('Helvetica', 20, leading=None)
+        y = 550-60-40*optional_symptoms
+        c.drawString(275, y, "Disease")
         c.setFont('Helvetica', 16, leading=None)
-        c.drawString(5, 510, "3. ")
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(20, 510, self.symptom3.get_text())
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(5, 470, "4. ")
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(20, 470, self.symptom4.get_text())
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(5,430, "5. ")
-        c.setFont('Helvetica', 16, leading=None)
-        c.drawString(20, 430, self.symptom5.get_text())
+        c.drawString(160, y-60, "The Patient is suffering from "+self.disease)
         c.showPage()
         c.save()
-
-
-
-
-
-
 
 class PopUp(Gtk.Dialog):
 
@@ -235,9 +311,41 @@ class PopUp(Gtk.Dialog):
         Gtk.Dialog.__init__(self, "Error", parent, Gtk.DialogFlags.MODAL, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
         self.set_default_size(100, 50)
         self.set_border_width(20)
-
+        self.set_position(Gtk.WindowPosition.CENTER)
         area = self.get_content_area()
         area.add(Gtk.Label("Atleast Two Symptoms are required."))
+        self.show_all()
+
+
+
+
+class Answer(Gtk.Dialog):
+
+
+
+    def __init__(self, parent, disease):
+
+        Gtk.Dialog.__init__(self, "Disease", parent, Gtk.DialogFlags.MODAL, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        self.set_default_size(100,50)
+        self.set_border_width(20)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.disease = disease
+        area = self.get_content_area()
+        area.add(Gtk.Label("The Possible Disease Patient is suffering from is " + self.disease))
+        self.show_all()
+
+
+
+class Error(Gtk.Dialog):
+
+    def __init__(self, parent):
+
+        Gtk.Dialog.__init__(self, "Error", parent, Gtk.DialogFlags.MODAL, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        self.set_default_size(100, 50)
+        self.set_border_width(20)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        area = self.get_content_area()
+        area.add(Gtk.Label("The Entered Symptom is Wrong."))
         self.show_all()
 
 
@@ -253,16 +361,8 @@ class PopUp(Gtk.Dialog):
 
 
 
-
-
-
-
-
-
-
-
-
 window = Main_Window()
+window.set_position(Gtk.WindowPosition.CENTER)
 window.connect("delete-event", Gtk.main_quit)
 window.show_all()
 Gtk.main()
