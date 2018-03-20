@@ -1,3 +1,4 @@
+import datetime
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -171,6 +172,14 @@ class Main_Window(Gtk.Window):
 
 
     def submit_clicked(self, widget):
+
+        if len(self.name.get_text()) == 0 or len(self.age.get_text()) == 0 or len(self.address.get_text()) == 0 or len(self.number.get_text()) == 0:
+            dialog_details = Details(self)
+            response = dialog_details.run()
+
+            dialog_details.destroy()
+            return
+
         if(len(self.symptom1.get_text()) == 0 or len(self.symptom2.get_text()) == 0):
             dialog_error = PopUp(self)
             response = dialog_error.run()
@@ -276,50 +285,70 @@ class Main_Window(Gtk.Window):
     def save_file(self, widget):
         c = canvas.Canvas(self.name.get_text(), pagesize=A4)
 
+        time = str(datetime.datetime.now())
+        time = time.split(' ')
+
+        date = time[0].split('-')
+        date = date[2]+"/"+date[1]+"/"+date[0]
+        time = time[1][:len(time[1])-7]
         c.setFont('Helvetica', 20, leading=None)
         c.drawString(240, 810, "Patient's Details")
+        c.setFont('Helvetica', 18, leading=None)
+        c.drawString(5, 810, date)
+        c.drawString(510, 810, time)
         c.setFont('Helvetica', 16, leading = None)
         c.drawString(5, 750, "Name : ")
         c.setFont('Helvetica', 16, leading = None)
-        c.drawString(70, 750, self.name.get_text())
+        c.drawString(90, 750, self.name.get_text())
         c.setFont('Helvetica', 16, leading=None)
         c.drawString(5, 710, "Age : ")
         c.setFont('Helvetica', 16, leading=None)
-        c.drawString(70,710, self.age.get_text())
+        c.drawString(90,710, self.age.get_text())
+
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(5, 670, "Address : ")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(90, 670, self.address.get_text())
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(5, 630, "Number : ")
+        c.setFont('Helvetica', 16, leading=None)
+        c.drawString(90, 630, self.number.get_text())
+
+
         c.setFont('Helvetica', 20, leading=None)
-        c.drawString(270, 650, "Symptoms")
+        c.drawString(270, 570, "Symptoms")
         c.setFont('Helvetica', 16, leading=None)
-        c.drawString(5, 590, "1. ")
+        c.drawString(5, 530, "1. ")
         c.setFont('Helvetica', 16, leading=None)
-        c.drawString(20, 590, self.symptom1.get_text())
+        c.drawString(20, 530, self.symptom1.get_text())
         c.setFont('Helvetica', 16, leading=None)
-        c.drawString(5, 550, "2. ")
+        c.drawString(5, 490, "2. ")
         c.setFont('Helvetica', 16, leading=None)
-        c.drawString(20, 550, self.symptom2.get_text())
+        c.drawString(20, 490, self.symptom2.get_text())
 
         optional_symptoms = 0
 
         if len(self.symptom3.get_text()) > 0:
             optional_symptoms = optional_symptoms + 1
             c.setFont('Helvetica', 16, leading=None)
-            c.drawString(5, 510, "3. ")
+            c.drawString(5, 490-optional_symptoms*40, str(2+optional_symptoms)+".")
             c.setFont('Helvetica', 16, leading=None)
-            c.drawString(20, 510, self.symptom3.get_text())
+            c.drawString(20, 490-optional_symptoms*40, self.symptom3.get_text())
         if len(self.symptom4.get_text()) > 0:
             optional_symptoms = optional_symptoms + 1
             c.setFont('Helvetica', 16, leading=None)
-            c.drawString(5, 470, "4. ")
+            c.drawString(5, 490-optional_symptoms*40, str(2+optional_symptoms)+".")
             c.setFont('Helvetica', 16, leading=None)
-            c.drawString(20, 470, self.symptom4.get_text())
+            c.drawString(20, 490-optional_symptoms*40, self.symptom4.get_text())
         if len(self.symptom5.get_text()) > 0:
             optional_symptoms = optional_symptoms + 1
             c.setFont('Helvetica', 16, leading=None)
-            c.drawString(5,430, "5. ")
+            c.drawString(5,490-optional_symptoms*40, str(2+optional_symptoms)+".")
             c.setFont('Helvetica', 16, leading=None)
-            c.drawString(20, 430, self.symptom5.get_text())
+            c.drawString(20, 490-optional_symptoms*40, self.symptom5.get_text())
 
         c.setFont('Helvetica', 20, leading=None)
-        y = 550-60-40*optional_symptoms
+        y = 490-60-40*optional_symptoms
         c.drawString(275, y, "Disease")
         c.setFont('Helvetica', 16, leading=None)
         c.drawString(160, y-60, "The Patient is suffering from "+self.disease)
@@ -383,7 +412,17 @@ class Same(Gtk.Dialog):
         area.add(Gtk.Label("Repeated Symptom(s)"))
         self.show_all()
 
+class Details(Gtk.Dialog):
 
+    def __init__(self, parent):
+
+        Gtk.Dialog.__init__(self, "Error", parent, Gtk.DialogFlags.MODAL, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        self.set_default_size(130, 80)
+        self.set_border_width(20)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        area = self.get_content_area()
+        area.add(Gtk.Label("Please enter Patient's details"))
+        self.show_all()
 
 
 
