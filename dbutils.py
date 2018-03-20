@@ -46,4 +46,3 @@ def getAllSymptomps():
                 result = result + "\n" + symptom
 
     return result
-
