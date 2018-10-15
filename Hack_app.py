@@ -9,7 +9,7 @@ from classifier import classifier
 import os
 from mail_bot import send_mail
 
-
+#GUI STILL NEEDS TO BE UPDATED AND USER FRIENDLY
 class Main_Window(Gtk.Window):
 
     def __init__(self):
